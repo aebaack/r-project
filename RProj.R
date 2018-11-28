@@ -28,3 +28,22 @@ emerging_cv = data.frame(
   Quarter = attr(emerging_quarters, 'names'), 
   CV = as.data.frame(do.call("rbind", emerging_cv))$V1)
 
+# Calculate the t-test to see if emerging markets are significantly more volatile
+#t.test(emerging_cv$CV, mu = mean(sp_cv$CV), alternative="greater")
+
+t.test(emerging_cv$CV, sp_cv$CV, alternative="greater", paired=TRUE)
+
+#t.test(emerging_cv$CV, sp_cv$CV, alternative="greater")
+
+# mtemp = data.frame(Quarter = emerging_cv$Quarter, y1 = sp_cv$CV, y2 = emerging_cv$CV)
+# mtemp = melt(mtemp)
+
+#print(ggplot(mtemp,aes(x=mtemp$Quarter,y=value,fill=variable)) + 
+#        +           geom_bar(stat="identity",position = "identity", alpha=.3))
+
+#print(ggplot(mtemp,aes(x=mtemp$Quarter,y=value,fill=variable)) + 
+#          +           geom_bar(stat="identity",position = "dodge", alpha=.3))
+
+#ggplot(data=mtemp,aes(x=Quarter))+
+#  +     geom_bar(aes(y=y2),stat="identity",position ="identity",alpha=.3,fill='lightblue',color='lightblue4') +
+#  +     geom_bar(aes(y=y1),stat="identity",position ="identity",alpha=.8,fill='pink',color='red')
