@@ -36,6 +36,12 @@ t.test(emerging_cv$CV, sp_cv$CV, alternative="greater")
 
 library(ggplot2)
 
+# Histogram
 g_data = data.frame(Quarter = emerging_cv$Quarter, SP = sp_cv$CV, Emerging = emerging_cv$CV)
-
 ggplot(data=g_data,aes(x=Quarter, y=CV))+scale_x_discrete(limits = rev(levels(g_data$Quarter)))+geom_bar(aes(y=Emerging),stat="identity",position ="identity",fill='lightblue',color='black') +geom_bar(aes(y=SP),stat="identity",position ="identity",fill='pink',color='black')+geom_bar(aes(y=Emerging),stat="identity",position ="identity",alpha=0,color='black') +coord_flip() + scale_y_continuous(expand = c(0, 0), limits = c(0, 0.13)) +xlab("Year and Quarter") + ylab("Coefficient of Variation (Unitless)")+ggtitle("Coefficient of Variation for Different Market Quarters", subtitle="Note: The Bars are Overlaid")
+
+# Density Curve
+t_data = data.frame(Index = rep(c("Emerging Markets", "S&P"), each = 61), cv = c(emerging_cv$CV, sp_cv$CV))
+cdat = data.frame(Index = c("Emerging Markets", "S&P"), rating.mean=c(mean(emerging_cv$CV), mean(sp_cv$CV)))
+ggplot(t_data, aes(x=cv, fill=Index)) + geom_density(alpha=0.3) + geom_vline(data=cdat, aes(xintercept=rating.mean,  colour=Index), linetype="dashed", size=1) + ggtitle("Density Curves")+xlab("Coefficient of Variation")+ylab("Frequency")
+
