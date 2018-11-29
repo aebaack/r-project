@@ -5,7 +5,7 @@ emerging_data = read.csv('EEM.csv')
 
 # Split data into quarters of the year
 
-install.packages("lubridate", dependencies=TRUE, repos='http://cran.rstudio.com/')
+#install.packages("lubridate", dependencies=TRUE, repos='http://cran.rstudio.com/')
 library(lubridate)
 
 sp_quarters = split(sp_data, quarter(sp_data$Date, with_year=TRUE))
@@ -29,21 +29,13 @@ emerging_cv = data.frame(
   CV = as.data.frame(do.call("rbind", emerging_cv))$V1)
 
 # Calculate the t-test to see if emerging markets are significantly more volatile
-#t.test(emerging_cv$CV, mu = mean(sp_cv$CV), alternative="greater")
 
-t.test(emerging_cv$CV, sp_cv$CV, alternative="greater", paired=TRUE)
+t.test(emerging_cv$CV, sp_cv$CV, alternative="greater")
 
-#t.test(emerging_cv$CV, sp_cv$CV, alternative="greater")
+# Graph the data
 
-# mtemp = data.frame(Quarter = emerging_cv$Quarter, y1 = sp_cv$CV, y2 = emerging_cv$CV)
-# mtemp = melt(mtemp)
+library(ggplot2)
 
-#print(ggplot(mtemp,aes(x=mtemp$Quarter,y=value,fill=variable)) + 
-#        +           geom_bar(stat="identity",position = "identity", alpha=.3))
+g_data = data.frame(Quarter = emerging_cv$Quarter, SP = sp_cv$CV, Emerging = emerging_cv$CV)
 
-#print(ggplot(mtemp,aes(x=mtemp$Quarter,y=value,fill=variable)) + 
-#          +           geom_bar(stat="identity",position = "dodge", alpha=.3))
-
-#ggplot(data=mtemp,aes(x=Quarter))+
-#  +     geom_bar(aes(y=y2),stat="identity",position ="identity",alpha=.3,fill='lightblue',color='lightblue4') +
-#  +     geom_bar(aes(y=y1),stat="identity",position ="identity",alpha=.8,fill='pink',color='red')
+ggplot(data=g_data,aes(x=Quarter, y=CV))+scale_x_discrete(limits = rev(levels(g_data$Quarter)))+geom_bar(aes(y=Emerging),stat="identity",position ="identity",fill='lightblue',color='black') +geom_bar(aes(y=SP),stat="identity",position ="identity",fill='pink',color='black')+geom_bar(aes(y=Emerging),stat="identity",position ="identity",alpha=0,color='black') +coord_flip() + scale_y_continuous(expand = c(0, 0), limits = c(0, 0.13)) +xlab("Year and Quarter") + ylab("Coefficient of Variation (Unitless)")+ggtitle("Coefficient of Variation for Different Market Quarters", subtitle="Note: The Bars are Overlaid")
